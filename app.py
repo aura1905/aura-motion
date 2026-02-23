@@ -3,29 +3,26 @@ import json
 import urllib.request
 import urllib.parse
 import random
-import traceback
 from flask import Flask, render_template, request, jsonify, make_response
 from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
 
 # --- 설정 (Configuration) ---
-COMFYUI_URL = "http://192.168.3.15:8188"  # 블랙웰 서버 주소
+COMFYUI_URL = "http://192.168.3.15:8189"  # 오빠가 알려준 8189 포트로 수정 완료!
 UPLOAD_FOLDER = 'uploads'
-# 윈도우/리눅스 호환을 위해 상대 경로 또는 환경에 맞는 경로 설정
 TEMPLATE_PATH = 'knight_v7_struct_template.json' 
 
 if not os.path.exists(TEMPLATE_PATH):
-    # 만약 현재 폴더에 없으면 기존 리눅스 경로 시도 (Agent 환경용)
     TEMPLATE_PATH = '/home/aura/open_storage/projects/granado_espada/knight_v7_struct_template.json'
 
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 CLASS_PRESETS = {
-    "warrior": { "name": "전사형 (Warrior)", "mod": "heavy overhead slam with a massive sword arc, hitting the ground" },
-    "mage": { "name": "마법사형 (Mage)", "mod": "elegant staff swing, focus on upper body posture" },
-    "musketeer": { "name": "총사형 (Musketeer)", "mod": "quick aim and recoil from firing a rifle" },
-    "martial_artist": { "name": "무도가형 (Martial Artist)", "mod": "sharp high kick and punch combination" }
+    "warrior": { "name": "전사형 (Warrior)", "mod": "무거운 무기로 머리 위에서부터 바닥까지 크게 내리치는" },
+    "mage": { "name": "마법사형 (Mage)", "mod": "우아하게 지팡이를 휘두르는" },
+    "musketeer": { "name": "총사형 (Musketeer)", "mod": "빠르게 조준하고 사격 후의 반동이 느껴지는" },
+    "martial_artist": { "name": "무도가형 (Martial Artist)", "mod": "날카로운 하이킥과 펀치를 조합한" }
 }
 
 def upload_to_comfyui(filepath):
@@ -56,7 +53,6 @@ def generate():
     batch_count = int(request.form.get('batch_count', 2))
     duration = float(request.form.get('duration', 1.2))
     
-    # 동작별 커스텀 프롬프트 리스트 가져오기
     selected_motions = request.form.getlist('motions')
     prompts = {}
     for m in selected_motions:
@@ -80,7 +76,6 @@ def generate():
             for v in range(1, batch_count + 1):
                 payload = json.loads(json.dumps(template))
                 
-                # 사용자가 수정한 프롬프트를 워크플로우에 주입
                 full_save_path = f"{save_path_prefix}/{char_name}/{char_name}_{m_type}_v{v}"
                 payload["398"]["inputs"]["filename_prefix"] = full_save_path
                 payload["408"]["inputs"]["value"] = custom_prompt + " Style: Clean 2D Chibi art, Granado Espada aesthetic. 512x512, white background."
@@ -97,12 +92,7 @@ def generate():
                     results.append({"type": m_type, "version": v, "prompt_id": res_data.get("prompt_id")})
 
         return jsonify({"status": "Success", "queued": results})
-    except urllib.error.HTTPError as e:
-        error_body = e.read().decode()
-        print(f"[ComfyUI Error] {e.code}: {error_body}", flush=True)
-        return jsonify({"error": error_body}), 500
     except Exception as e:
-        traceback.print_exc()
         return jsonify({"error": str(e)}), 500
 
 @app.route('/status/<prompt_id>')
@@ -134,4 +124,4 @@ def proxy_download():
     except: return "Error", 500
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=3031, debug=True)
+    app.run(host='0.0.0.0', port=3031)
