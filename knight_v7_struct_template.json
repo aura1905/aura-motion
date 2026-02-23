@@ -558,7 +558,7 @@
         0
       ]
     },
-    "class_type": "ClownsharkSampler",
+    "class_type": "ClownsharKSampler_Beta",
     "_meta": {
       "title": "Sampler 3 low"
     }
@@ -673,7 +673,7 @@
         2
       ]
     },
-    "class_type": "ClownsharkSampler",
+    "class_type": "ClownsharKSampler_Beta",
     "_meta": {
       "title": "ClownsharkSampler High"
     }
@@ -713,7 +713,7 @@
         0
       ]
     },
-    "class_type": "ClownsharkSampler",
+    "class_type": "ClownsharKSampler_Beta",
     "_meta": {
       "title": "Sampler 2 low"
     }
