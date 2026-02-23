@@ -103,6 +103,10 @@ def generate():
         print(f"Successfully queued {len(results)} jobs.")
         return jsonify({"status": "Success", "queued": results})
 
+    except urllib.error.HTTPError as e:
+        error_body = e.read().decode()
+        print(f"[ComfyUI Error] {e.code}: {error_body}", flush=True)
+        return jsonify({"error": error_body}), 500
     except Exception as e:
         print("!!! UNEXPECTED ERROR !!!")
         traceback.print_exc()
