@@ -97,6 +97,10 @@ def generate():
                     results.append({"type": m_type, "version": v, "prompt_id": res_data.get("prompt_id")})
 
         return jsonify({"status": "Success", "queued": results})
+    except urllib.error.HTTPError as e:
+        error_body = e.read().decode()
+        print(f"[ComfyUI Error] {e.code}: {error_body}", flush=True)
+        return jsonify({"error": error_body}), 500
     except Exception as e:
         traceback.print_exc()
         return jsonify({"error": str(e)}), 500
