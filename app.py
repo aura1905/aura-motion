@@ -3,6 +3,7 @@ import json
 import urllib.request
 import urllib.parse
 import random
+import traceback
 from flask import Flask, render_template, request, jsonify, make_response
 from werkzeug.utils import secure_filename
 
@@ -97,6 +98,7 @@ def generate():
 
         return jsonify({"status": "Success", "queued": results})
     except Exception as e:
+        traceback.print_exc()
         return jsonify({"error": str(e)}), 500
 
 @app.route('/status/<prompt_id>')
@@ -128,4 +130,4 @@ def proxy_download():
     except: return "Error", 500
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=3031)
+    app.run(host='0.0.0.0', port=3031, debug=True)
