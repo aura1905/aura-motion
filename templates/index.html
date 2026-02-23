@@ -198,6 +198,13 @@
             gap: 10px;
             color: var(--text-dim);
             cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .drop-zone.drag-over {
+            border-color: var(--accent);
+            background: rgba(92, 107, 192, 0.15);
+            color: var(--accent);
         }
 
         .motion-grid {
@@ -464,14 +471,31 @@
         durSlider.oninput = () => durInput.value = durSlider.value;
         durInput.oninput = () => durSlider.value = durInput.value;
 
+        function loadImageFile(file) {
+            const reader = new FileReader();
+            reader.onload = (e) => { preview.src = e.target.result; preview.style.display = 'block'; document.getElementById('dropZone').style.display = 'none'; };
+            reader.readAsDataURL(file);
+        }
+
         fileInput.onchange = (e) => {
-            const file = e.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = (prev) => { preview.src = prev.target.result; preview.style.display = 'block'; document.getElementById('dropZone').style.display = 'none'; };
-                reader.readAsDataURL(file);
-            }
+            if (e.target.files[0]) loadImageFile(e.target.files[0]);
         };
+
+        // Drag & Drop
+        const dropZone = document.getElementById('dropZone');
+        dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('drag-over'); });
+        dropZone.addEventListener('dragleave', () => { dropZone.classList.remove('drag-over'); });
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('drag-over');
+            const file = e.dataTransfer.files[0];
+            if (file && file.type.startsWith('image/')) {
+                const dt = new DataTransfer();
+                dt.items.add(file);
+                fileInput.files = dt.files;
+                loadImageFile(file);
+            }
+        });
 
         function showToast(msg) {
             const toast = document.createElement('div'); toast.className = 'toast'; toast.innerHTML = msg;
