@@ -291,6 +291,32 @@
             font-weight: 600;
         }
 
+        .motion-row {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: var(--text-main);
+        }
+
+        .motion-row label {
+            min-width: 80px;
+            cursor: pointer;
+        }
+
+        .motion-row input[type="range"] {
+            flex: 1;
+            height: 4px;
+        }
+
+        .motion-row .dur-val {
+            min-width: 24px;
+            text-align: right;
+            color: var(--accent);
+            font-weight: 600;
+            font-size: 11px;
+        }
+
         .results-bar {
             height: 420px;
             /* 320px에서 높이 상향 */
@@ -433,27 +459,36 @@
 
                 <div>
                     <div class="section-title">동작 선택</div>
-                    <div class="motion-grid">
-                        <label class="motion-item"><input type="checkbox" name="motions" value="idle" checked
-                                onchange="togglePrompt('idle')"> Idle</label>
-                        <label class="motion-item"><input type="checkbox" name="motions" value="attack" checked
-                                onchange="togglePrompt('attack')"> Attack</label>
-                        <label class="motion-item"><input type="checkbox" name="motions" value="skill" checked
-                                onchange="togglePrompt('skill')"> Skill</label>
-                        <label class="motion-item"><input type="checkbox" name="motions" value="run" checked
-                                onchange="togglePrompt('run')"> Run</label>
-                        <label class="motion-item"><input type="checkbox" name="motions" value="die" checked
-                                onchange="togglePrompt('die')"> Die</label>
+                    <div style="display:flex; flex-direction:column; gap:6px;">
+                        <div class="motion-row"><label><input type="checkbox" name="motions" value="idle" checked
+                                    onchange="togglePrompt('idle')"> Idle</label><input type="range" id="dur-idle"
+                                min="0.5" max="3.0" step="0.1" value="1.2"
+                                oninput="this.nextElementSibling.textContent=this.value"><span
+                                class="dur-val">1.2</span>s</div>
+                        <div class="motion-row"><label><input type="checkbox" name="motions" value="attack" checked
+                                    onchange="togglePrompt('attack')"> Attack</label><input type="range" id="dur-attack"
+                                min="0.5" max="3.0" step="0.1" value="1.2"
+                                oninput="this.nextElementSibling.textContent=this.value"><span
+                                class="dur-val">1.2</span>s</div>
+                        <div class="motion-row"><label><input type="checkbox" name="motions" value="skill" checked
+                                    onchange="togglePrompt('skill')"> Skill</label><input type="range" id="dur-skill"
+                                min="0.5" max="3.0" step="0.1" value="1.5"
+                                oninput="this.nextElementSibling.textContent=this.value"><span
+                                class="dur-val">1.5</span>s</div>
+                        <div class="motion-row"><label><input type="checkbox" name="motions" value="run" checked
+                                    onchange="togglePrompt('run')"> Run</label><input type="range" id="dur-run"
+                                min="0.5" max="3.0" step="0.1" value="0.8"
+                                oninput="this.nextElementSibling.textContent=this.value"><span
+                                class="dur-val">0.8</span>s</div>
+                        <div class="motion-row"><label><input type="checkbox" name="motions" value="die" checked
+                                    onchange="togglePrompt('die')"> Die</label><input type="range" id="dur-die"
+                                min="0.5" max="3.0" step="0.1" value="1.2"
+                                oninput="this.nextElementSibling.textContent=this.value"><span
+                                class="dur-val">1.2</span>s</div>
                     </div>
                 </div>
-
                 <div>
                     <div class="section-title">상세 파라미터</div>
-                    <div class="form-group">
-                        <label>재생 시간 <span style="float:right;" id="dur_val">1.2</span></label>
-                        <input type="range" name="duration" id="duration_slider" min="0.5" max="3.0" step="0.1"
-                            value="1.2">
-                    </div>
                     <div class="form-group"><label>시안 제작 개수 (Variations)</label><input type="number" name="batch_count"
                             value="1" min="1" max="4"></div>
                     <label style="display:flex; align-items:center; gap:8px; cursor:pointer; margin-bottom: 10px;">
@@ -533,8 +568,7 @@
                 const dur = DEFAULT_DURATIONS[m] || 1.2;
                 const div = document.createElement('div');
                 div.className = 'prompt-card'; div.id = `card-${m}`;
-                div.innerHTML = `<label>${m.toUpperCase()}</label><textarea id="ta-${m}" name="prompt_${m}">${getPromptText(m)}</textarea>
-                    <div class="dur-row">⏱ <input type="range" id="dur-${m}" min="0.5" max="3.0" step="0.1" value="${dur}" oninput="this.nextElementSibling.textContent=this.value"><span class="dur-val">${dur}</span>초</div>`;
+                div.innerHTML = `<label>${m.toUpperCase()}</label><textarea id="ta-${m}" name="prompt_${m}">${getPromptText(m)}</textarea>`;
                 container.appendChild(div);
             } else {
                 const card = document.getElementById(`card-${m}`);
