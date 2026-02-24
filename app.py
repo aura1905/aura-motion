@@ -75,7 +75,8 @@ def generate():
         print(f"[GENERATE] Motions: {selected_motions}, Batch: {batch_count}, Duration: {duration}, RemoveBG: {remove_bg}", flush=True)
         for m_type in selected_motions:
             custom_prompt = request.form.get(f'prompt_{m_type}', '')
-            print(f"  [MOTION] {m_type}: prompt='{custom_prompt[:60]}...'", flush=True)
+            motion_duration = float(request.form.get(f'duration_{m_type}', duration))
+            print(f"  [MOTION] {m_type}: dur={motion_duration}, prompt='{custom_prompt[:60]}...'", flush=True)
             for v in range(1, batch_count + 1):
                 payload = json.loads(json.dumps(template))
                 
@@ -83,7 +84,7 @@ def generate():
                 payload["23"]["inputs"]["image"] = blackwell_filename
                 payload["24"]["inputs"]["image"] = blackwell_filename
                 payload["1370"]["inputs"]["text"] = custom_prompt
-                payload["1512:1668"]["inputs"]["value"] = int(duration) 
+                payload["1512:1668"]["inputs"]["value"] = int(motion_duration) 
                 
                 # 2. 배경 제거(RMBG) 스위칭 로직
                 if remove_bg:

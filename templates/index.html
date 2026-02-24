@@ -257,7 +257,7 @@
 
         .prompt-card textarea {
             width: 100%;
-            height: 100px;
+            height: 120px;
             background: rgba(0, 0, 0, 0.2);
             border: none;
             color: #ced4da;
@@ -266,8 +266,29 @@
             resize: none;
             outline: none;
             border-radius: 4px;
-            padding: 8px;
+            padding: 10px;
             box-sizing: border-box;
+        }
+
+        .prompt-card .dur-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 6px;
+            font-size: 11px;
+            color: var(--text-dim);
+        }
+
+        .prompt-card .dur-row input[type="range"] {
+            flex: 1;
+            height: 4px;
+        }
+
+        .prompt-card .dur-row .dur-val {
+            min-width: 28px;
+            text-align: right;
+            color: var(--text-main);
+            font-weight: 600;
         }
 
         .results-bar {
@@ -486,6 +507,7 @@
             "run": "0.8초 길이의 역동적인 질주 애니메이션. 방향: 왼쪽을 향해 전력 질주함. 이펙트 없음. 캐릭터: [NAME]. 동작: 상체를 숙이고 무릎을 높이 들며 힘차게 달려감. 깨끗한 2D 스타일.",
             "die": "1.2초 길이의 사망 애니메이션. 방향: 왼쪽을 바라봄. 마법 효과 없음. 캐릭터: [NAME]. 동작: 힘을 잃고 무기를 떨어뜨리며 뒤로 쓰러짐, 마지막에는 움직임 없이 멈춤. 루프 안 됨. 깨끗한 2D 스타일."
         };
+        const DEFAULT_DURATIONS = { "idle": 1.2, "attack": 1.2, "skill": 1.5, "run": 0.8, "die": 1.2 };
         const CLASS_MODS = { "warrior": "무거운 무기로 크게 내리치는", "mage": "우아하게 지팡이를 휘두르는", "musketeer": "빠르게 사격하는", "martial_artist": "날카로운 발차기를 하는" };
 
         function getPromptText(m) {
@@ -508,9 +530,11 @@
             const container = document.getElementById('prompt_container');
             const cb = document.querySelector(`input[value="${m}"]`);
             if (cb.checked) {
+                const dur = DEFAULT_DURATIONS[m] || 1.2;
                 const div = document.createElement('div');
                 div.className = 'prompt-card'; div.id = `card-${m}`;
-                div.innerHTML = `<label>${m.toUpperCase()}</label><textarea id="ta-${m}" name="prompt_${m}">${getPromptText(m)}</textarea>`;
+                div.innerHTML = `<label>${m.toUpperCase()}</label><textarea id="ta-${m}" name="prompt_${m}">${getPromptText(m)}</textarea>
+                    <div class="dur-row">⏱ <input type="range" id="dur-${m}" min="0.5" max="3.0" step="0.1" value="${dur}" oninput="this.nextElementSibling.textContent=this.value"><span class="dur-val">${dur}</span>초</div>`;
                 container.appendChild(div);
             } else {
                 const card = document.getElementById(`card-${m}`);
@@ -578,10 +602,12 @@
 
             formData.append('remove_bg', removeBg);
             formData.append('image', window.currentFile);
-            // 프롬프트 textarea가 폼 밖에 있으므로 수동 추가
+            // 프롬프트 & 재생시간 (폼 밖이므로 수동 추가)
             motions.forEach(m => {
                 const ta = document.getElementById(`ta-${m}`);
                 if (ta) formData.append(`prompt_${m}`, ta.value);
+                const dur = document.getElementById(`dur-${m}`);
+                if (dur) formData.append(`duration_${m}`, dur.value);
             });
 
             try {
