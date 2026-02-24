@@ -4,19 +4,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🌀 Aura Motion</title>
+    <title>Aura Motion v1.2.2</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-deep: #0f111a;
-            --bg-surface: #161925;
-            --bg-card: #1c2030;
-            --accent: #5c6bc0;
-            --accent-hover: #7986cb;
-            --text-main: #e0e0e0;
-            --text-dim: #9499b0;
-            --border: #2d324a;
-            --success: #4caf50;
+            --bg-deep: #0b0e14;
+            --bg-sidebar: #131722;
+            --bg-card: #1c212d;
+            --accent: #4e67eb;
+            --accent-hover: #6379f1;
+            --text-main: #ffffff;
+            --text-dim: #848da0;
+            --border: #262c3d;
         }
 
         body {
@@ -32,21 +31,24 @@
 
         .top-nav {
             height: 48px;
-            background-color: var(--bg-surface);
+            background-color: var(--bg-sidebar);
             border-bottom: 1px solid var(--border);
             display: flex;
             align-items: center;
-            padding: 0 16px;
-            gap: 20px;
-            z-index: 100;
+            padding: 0 20px;
+            justify-content: space-between;
         }
 
         .logo {
             font-weight: 700;
-            font-size: 14px;
+            font-size: 15px;
             display: flex;
             align-items: center;
             gap: 8px;
+        }
+
+        .logo span {
+            color: var(--accent);
         }
 
         .workspace {
@@ -55,9 +57,9 @@
             overflow: hidden;
         }
 
-        .sidebar {
-            width: 320px;
-            background-color: var(--bg-surface);
+        .sidebar-left {
+            width: 280px;
+            background-color: var(--bg-sidebar);
             border-right: 1px solid var(--border);
             padding: 20px;
             display: flex;
@@ -66,13 +68,12 @@
             overflow-y: auto;
         }
 
-        .panel-title {
+        .section-title {
             font-size: 11px;
+            color: var(--text-dim);
             text-transform: uppercase;
             letter-spacing: 1px;
-            color: var(--text-dim);
-            margin-bottom: 16px;
-            font-weight: 600;
+            margin-bottom: 12px;
         }
 
         .form-group {
@@ -89,8 +90,7 @@
         input[type="text"],
         select,
         input[type="number"],
-        input[type="range"],
-        textarea {
+        input[type="range"] {
             width: 100%;
             background-color: var(--bg-deep);
             border: 1px solid var(--border);
@@ -102,225 +102,295 @@
             box-sizing: border-box;
         }
 
-        .btn-folder {
-            background-color: var(--bg-card);
+        .category-btns {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 16px;
+        }
+
+        .btn-cat {
+            flex: 1;
+            padding: 6px;
+            background: var(--bg-card);
             border: 1px solid var(--border);
             color: var(--text-dim);
-            padding: 6px 10px;
             border-radius: 4px;
             cursor: pointer;
             font-size: 11px;
-            transition: 0.2s;
         }
 
-        .btn-folder:hover {
-            background-color: var(--border);
-            color: var(--text-main);
-        }
-
-        .btn-folder.active {
-            background-color: var(--accent);
+        .btn-cat.active {
+            background: var(--accent);
             color: white;
             border-color: var(--accent);
-        }
-
-        .content-area {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-        }
-
-        .section-top {
-            height: 60%;
-            display: flex;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .upload-view {
-            flex: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            border-right: 1px solid var(--border);
-            background: rgba(0, 0, 0, 0.2);
-        }
-
-        .prompt-view {
-            width: 350px;
-            padding: 20px;
-            overflow-y: auto;
-            background: var(--bg-surface);
-        }
-
-        .section-results {
-            height: 40%;
-            overflow-y: auto;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .gallery {
-            display: flex;
-            overflow-x: auto;
-            gap: 16px;
-            padding: 10px 0;
-        }
-
-        .gallery-item {
-            flex: 0 0 170px;
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 10px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .preview-img {
-            max-height: 80%;
-            border-radius: 8px;
-            display: none;
-        }
-
-        .drop-zone {
-            width: 200px;
-            height: 120px;
-            border: 2px dashed var(--border);
-            border-radius: 12px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            color: var(--text-dim);
-            cursor: pointer;
-            transition: 0.2s;
-        }
-
-        .drop-zone.drag-over {
-            border-color: var(--accent);
-            background: rgba(92, 107, 192, 0.15);
-            color: var(--accent);
         }
 
         .motion-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 6px;
+            gap: 8px;
         }
 
         .motion-item {
             display: flex;
             align-items: center;
             gap: 8px;
-            font-size: 11px;
-            padding: 6px;
+            font-size: 12px;
+            padding: 8px;
             background: var(--bg-card);
             border-radius: 4px;
             cursor: pointer;
+        }
+
+        .motion-item input {
+            accent-color: var(--accent);
+        }
+
+        .viewport {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background-color: var(--bg-deep);
+            overflow: hidden;
+        }
+
+        .upload-area {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            padding: 20px;
+            min-height: 540px;
+            /* 512 + padding */
+        }
+
+        .drop-zone {
+            width: 512px;
+            height: 512px;
+            border: 2px dashed var(--border);
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-dim);
+            cursor: pointer;
+            transition: 0.3s;
+            background: rgba(20, 24, 35, 0.5);
+        }
+
+        .drop-zone.dragover {
+            border-color: var(--accent);
+            background: rgba(78, 103, 235, 0.05);
+        }
+
+        .preview-img {
+            width: 512px;
+            height: 512px;
+            object-fit: contain;
+            border-radius: 8px;
+            display: none;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+            background: #000;
         }
 
         .btn-generate {
             position: absolute;
             bottom: 20px;
             right: 20px;
-            padding: 12px 32px;
+            padding: 14px 36px;
             background-color: var(--accent);
             color: white;
             border: none;
             border-radius: 6px;
             font-weight: 700;
             cursor: pointer;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+            transition: 0.2s;
+            z-index: 10;
+        }
+
+        .btn-generate:hover {
+            background-color: var(--accent-hover);
+            transform: translateY(-2px);
+        }
+
+        .sidebar-right {
+            width: 350px;
+            background-color: var(--bg-sidebar);
+            border-left: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .prompt-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--border);
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-dim);
+            text-transform: uppercase;
+        }
+
+        .prompt-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        .prompt-card {
+            background: var(--bg-card);
+            border-radius: 6px;
+            padding: 12px;
+            margin-bottom: 16px;
+            border: 1px solid var(--border);
+        }
+
+        .prompt-card label {
+            color: var(--accent);
+            font-weight: 700;
+            font-size: 10px;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .prompt-card textarea {
+            width: 100%;
+            height: 100px;
+            background: rgba(0, 0, 0, 0.2);
+            border: none;
+            color: #ced4da;
+            font-size: 12px;
+            line-height: 1.5;
+            resize: none;
+            outline: none;
+            border-radius: 4px;
+            padding: 8px;
+            box-sizing: border-box;
+        }
+
+        .results-bar {
+            height: 420px;
+            /* 320px에서 높이 상향 */
+            background-color: var(--bg-sidebar);
+            border-top: 1px solid var(--border);
+            padding: 15px 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .results-title {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-dim);
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+
+        .gallery {
+            display: flex;
+            overflow-x: auto;
+            overflow-y: hidden;
+            gap: 16px;
+            padding: 10px 0;
+            flex: 1;
+            scrollbar-width: thin;
+            scrollbar-color: var(--accent) var(--bg-sidebar);
+        }
+
+        .gallery::-webkit-scrollbar {
+            height: 8px;
+        }
+
+        .gallery::-webkit-scrollbar-track {
+            background: var(--bg-sidebar);
+        }
+
+        .gallery::-webkit-scrollbar-thumb {
+            background: var(--accent);
+            border-radius: 10px;
+        }
+
+        .gallery-item {
+            flex: 0 0 280px;
+            /* 160px에서 280px로 상향 */
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .gallery-item .label {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--accent);
+            margin-bottom: 8px;
+        }
+
+        .gallery-item .box {
+            width: 256px;
+            height: 256px;
+            background: #000;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            color: #444;
+        }
+
+        .gallery-item button {
+            width: 100%;
+            margin-top: 10px;
+            padding: 8px;
+            background: var(--accent);
+            border: none;
+            color: white;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        #fileInput {
+            display: none;
         }
 
         #status-overlay {
             position: fixed;
             top: 60px;
             right: 20px;
-            width: 320px;
-            z-index: 1000;
+            z-index: 2000;
         }
 
         .toast {
-            background-color: var(--bg-card);
-            border: 1px solid var(--border);
-            border-left: 4px solid var(--accent);
-            padding: 12px;
-            border-radius: 8px;
-            margin-bottom: 10px;
-            font-size: 12px;
-            animation: slideIn 0.3s ease-out;
-        }
-
-        @keyframes slideIn {
-            from {
-                transform: translateX(100%);
-            }
-
-            to {
-                transform: translateX(0);
-            }
-        }
-
-        .prompt-card {
             background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            padding: 10px;
-            margin-bottom: 10px;
-        }
-
-        .prompt-card label {
-            color: var(--accent);
-            font-weight: 600;
-            font-size: 11px;
-            text-transform: uppercase;
+            border-left: 4px solid var(--accent);
+            padding: 12px 20px;
+            border-radius: 4px;
             margin-bottom: 8px;
-        }
-
-        textarea {
-            height: 80px;
-            font-size: 11px;
-            line-height: 1.4;
-            resize: none;
-            border: none;
-            background: rgba(0, 0, 0, 0.3);
-        }
-
-        .bottom-bar {
-            height: 32px;
-            background-color: var(--bg-surface);
-            border-top: 1px solid var(--border);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 16px;
-            font-size: 11px;
-            color: var(--text-dim);
-        }
-
-        #fileInput {
-            display: none;
+            font-size: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
         }
     </style>
 </head>
 
 <body>
+
     <nav class="top-nav">
-        <div class="logo">🌀 Aura Motion</div>
-        <div style="flex:1"></div>
-        <div style="font-size:11px; color:var(--text-dim);">Blackwell Engine</div>
+        <div class="logo">● Aura Motion <span>v1.2.2</span></div>
+        <div style="font-size: 11px; color: var(--text-dim);">Blackwell GPU Engine</div>
     </nav>
+
     <div class="workspace">
-        <aside class="sidebar">
+        <aside class="sidebar-left">
             <form id="mainForm">
                 <div>
-                    <div class="panel-title">캐릭터 설정</div>
+                    <div class="section-title">캐릭터 설정</div>
                     <div class="form-group"><label>네이밍 ID</label><input type="text" name="char_name" id="char_name"
                             placeholder="Fighter_M" required></div>
                     <div class="form-group">
@@ -332,16 +402,16 @@
                         </select>
                     </div>
                     <label>카테고리</label>
-                    <div id="folder_presets" style="margin-bottom:10px; display:flex; gap:4px;">
-                        <button type="button" class="btn-folder active" onclick="setCategory('PC')">PC</button>
-                        <button type="button" class="btn-folder" onclick="setCategory('Monster')">Mon</button>
-                        <button type="button" class="btn-folder" onclick="setCategory('NPC')">NPC</button>
+                    <div class="category-btns">
+                        <button type="button" class="btn-cat active" onclick="setCategory('PC')">PC</button>
+                        <button type="button" class="btn-cat" onclick="setCategory('Mon')">Mon</button>
+                        <button type="button" class="btn-cat" onclick="setCategory('NPC')">NPC</button>
                     </div>
-                    <input type="hidden" name="root_path" id="root_path" value="C:/Git/ComfyUI/output/WAN/GE_SD/">
-                    <input type="hidden" name="save_path" id="save_path">
+                    <input type="hidden" name="save_path" id="save_path" value="WAN/GE_SD/PC/">
                 </div>
+
                 <div>
-                    <div class="panel-title">동작 선택</div>
+                    <div class="section-title">동작 선택</div>
                     <div class="motion-grid">
                         <label class="motion-item"><input type="checkbox" name="motions" value="idle" checked
                                 onchange="togglePrompt('idle')"> Idle</label>
@@ -354,94 +424,93 @@
                         <label class="motion-item"><input type="checkbox" name="motions" value="die" checked
                                 onchange="togglePrompt('die')"> Die</label>
                     </div>
-                    <div class="form-group" style="margin-top:16px;">
-                        <label>재생 시간 <input type="number" name="duration" id="duration_input" step="0.1" value="1.2"
-                                style="width:45px; padding:2px; font-size:10px; float:right;"></label>
-                        <input type="range" id="duration_slider" min="0.5" max="3.0" step="0.1" value="1.2">
-                    </div>
-                    <div class="form-group">
-                        <label>시안 제작 개수 (Variations)</label>
-                        <input type="number" name="batch_count" value="2" min="1" max="4">
-                        <div style="font-size: 10px; color: var(--text-dim); margin-top: 4px;">* 한 번에 생성할 동작 시안의 개수를
-                            설정합니다.</div>
-                    </div>
                 </div>
-                <div style="margin-top: auto; padding-top: 10px; border-top: 1px solid var(--border);">
-                    <div class="panel-title">로컬 저장소</div>
-                    <div style="display:flex; gap:4px;">
+
+                <div>
+                    <div class="section-title">상세 파라미터</div>
+                    <div class="form-group">
+                        <label>재생 시간 <span style="float:right;" id="dur_val">1.2</span></label>
+                        <input type="range" name="duration" id="duration_slider" min="0.5" max="3.0" step="0.1"
+                            value="1.2">
+                    </div>
+                    <div class="form-group"><label>시안 제작 개수 (Variations)</label><input type="number" name="batch_count"
+                            value="1" min="1" max="4"></div>
+                    <label style="display:flex; align-items:center; gap:8px; cursor:pointer; margin-bottom: 10px;">
+                        <input type="checkbox" name="remove_bg_toggle" id="remove_bg_toggle" checked> 배경 제거 (RMBG)
+                    </label>
+                </div>
+
+                <div style="margin-top: auto; border-top: 1px solid var(--border); padding-top: 15px;">
+                    <div class="section-title">로컬 저장소</div>
+                    <div style="display:flex; gap:6px;">
                         <input type="text" id="local_path_display" value="Downloads" readonly
                             style="font-size:10px; flex:1; background:rgba(0,0,0,0.2);">
-                        <button type="button" class="btn-folder" id="btn_pick_folder">...</button>
+                        <button type="button" class="btn-cat" id="btn_pick_folder" style="width:40px;">...</button>
                     </div>
                 </div>
             </form>
         </aside>
-        <div class="content-area">
-            <div class="section-top">
-                <div class="upload-view">
-                    <input type="file" id="fileInput" accept="image/*">
-                    <div class="drop-zone" id="dropZone" onclick="document.getElementById('fileInput').click()">이미지 업로드
-                    </div>
-                    <img id="preview" class="preview-img">
-                    <button class="btn-generate" id="generateBtn">🎬 연산 시작</button>
+
+        <main class="viewport">
+            <div class="upload-area" id="uploadArea">
+                <input type="file" id="fileInput" accept="image/*">
+                <div class="drop-zone" id="dropZone">
+                    <div style="font-size: 14px; font-weight: 500;">이미지 업로드</div>
+                    <div style="font-size: 11px; opacity: 0.5; margin-top: 8px;">드래그 앤 드롭 또는 클릭</div>
                 </div>
-                <div class="prompt-view">
-                    <div class="panel-title">Prompt Editor</div>
-                    <div id="prompt_container"></div>
-                </div>
+                <img id="preview" class="preview-img">
+                <button class="btn-generate" id="generateBtn">🎬 연산 시작</button>
             </div>
-            <section class="section-results">
-                <div class="panel-title">Results (Horizontal Scroll)</div>
+
+            <section class="results-bar">
+                <div class="results-title">Results (Horizontal Scroll)</div>
                 <div class="gallery" id="gallery">
-                    <div style="padding:20px; color:var(--text-dim); font-size:11px;">대기 중...</div>
+                    <div style="color:var(--text-dim); font-size:12px; margin:auto;">대기 중...</div>
                 </div>
             </section>
-        </div>
+        </main>
+
+        <aside class="sidebar-right">
+            <div class="prompt-header">Prompt Editor</div>
+            <div class="prompt-container" id="prompt_container"></div>
+        </aside>
     </div>
+
     <div id="status-overlay"></div>
-    <footer class="bottom-bar">
-        <div>🌀 Aura Motion</div>
-        <div>v1.0.0</div>
-    </footer>
+
     <script>
-        const CLASS_MODS = {
-            "warrior": "무거운 무기로 머리 위에서부터 바닥까지 크게 내리치는",
-            "mage": "우아하게 지팡이를 휘두르는",
-            "musketeer": "빠르게 조준하고 사격 후의 반동이 느껴지는",
-            "martial_artist": "날카로운 하이킥과 펀치를 조합한"
-        };
         const BASE_TEMPLATES = {
-            "idle": "1초 길이의 자연스러운 대기 애니메이션. 방향: 왼쪽을 바라보는 옆모습. 캐릭터: [NAME]. 동작: 숨을 쉬듯 몸이 부드럽게 위아래로 들썩임, 0.5초 지점에 눈을 한 번 깜빡임. 마법 효과 없음. 깨끗한 2D 스타일.",
+            "idle": "1초 길이의 자연스러운 대기 애니메이션. 방향: 왼쪽을 바라보는 옆모습. 캐릭터: [NAME]. 동작: 숨을 쉬듯 몸이 부드럽게 위아래로 들썩임. 마법 효과 없음. 깨끗한 2D 스타일.",
             "attack": "1.2초 길이의 강력한 [MOD] 공격 애니메이션. 방향: 왼쪽을 바라보는 옆모습. 이펙트 없음. 캐릭터: [NAME]. 동작: 빠르게 무기를 들어 올린 후 강하게 휘두르고 원래 자세로 복귀함. 깨끗한 2D 스타일.",
             "skill": "1.5초 길이의 영웅적인 스킬 포즈 애니메이션. 방향: 왼쪽을 바라보는 옆모습. 마법 효과 없음. 캐릭터: [NAME]. 동작: 무기를 머리 위로 높이 치켜들고 함성을 지른 후 잠시 멈췄다가 대기 자세로 돌아옴. 깨끗한 2D 스타일.",
             "run": "0.8초 길이의 역동적인 질주 애니메이션. 방향: 왼쪽을 향해 전력 질주함. 이펙트 없음. 캐릭터: [NAME]. 동작: 상체를 숙이고 무릎을 높이 들며 힘차게 달려감. 깨끗한 2D 스타일.",
             "die": "1.2초 길이의 사망 애니메이션. 방향: 왼쪽을 바라봄. 마법 효과 없음. 캐릭터: [NAME]. 동작: 힘을 잃고 무기를 떨어뜨리며 뒤로 쓰러짐, 마지막에는 움직임 없이 멈춤. 루프 안 됨. 깨끗한 2D 스타일."
         };
+        const CLASS_MODS = { "warrior": "무거운 무기로 크게 내리치는", "mage": "우아하게 지팡이를 휘두르는", "musketeer": "빠르게 사격하는", "martial_artist": "날카로운 발차기를 하는" };
 
-        function getPromptText(m, charClass, charName) {
-            let tpl = BASE_TEMPLATES[m].replace('[NAME]', charName || 'Character');
-            if (m === 'attack') tpl = tpl.replace('[MOD]', CLASS_MODS[charClass]);
+        function getPromptText(m) {
+            const name = document.getElementById('char_name').value || 'Character';
+            const cls = document.getElementById('char_class').value;
+            let tpl = BASE_TEMPLATES[m].replace('[NAME]', name);
+            if (m === 'attack') tpl = tpl.replace('[MOD]', CLASS_MODS[cls]);
             return tpl;
         }
 
         function updateAllPrompts() {
-            const charName = document.getElementById('char_name').value;
-            const charClass = document.getElementById('char_class').value;
-            document.querySelectorAll('textarea[name^="prompt_"]').forEach(ta => {
-                const m = ta.name.split('_')[1];
-                ta.value = getPromptText(m, charClass, charName);
+            document.querySelectorAll('textarea[id^="ta-"]').forEach(ta => {
+                const m = ta.id.split('-')[1];
+                ta.value = getPromptText(m);
             });
         }
         document.getElementById('char_name').oninput = updateAllPrompts;
 
         function togglePrompt(m) {
             const container = document.getElementById('prompt_container');
-            const charName = document.getElementById('char_name').value;
-            const charClass = document.getElementById('char_class').value;
-            if (document.querySelector(`input[value="${m}"]`).checked) {
+            const cb = document.querySelector(`input[value="${m}"]`);
+            if (cb.checked) {
                 const div = document.createElement('div');
                 div.className = 'prompt-card'; div.id = `card-${m}`;
-                div.innerHTML = `<label>${m}</label><textarea name="prompt_${m}">${getPromptText(m, charClass, charName)}</textarea>`;
+                div.innerHTML = `<label>${m.toUpperCase()}</label><textarea id="ta-${m}" name="prompt_${m}">${getPromptText(m)}</textarea>`;
                 container.appendChild(div);
             } else {
                 const card = document.getElementById(`card-${m}`);
@@ -450,65 +519,66 @@
         }
         ['idle', 'attack', 'skill', 'run', 'die'].forEach(togglePrompt);
 
-        // UI & API Logic
+        // Drag & Drop
+        const dropZone = document.getElementById('dropZone');
         const fileInput = document.getElementById('fileInput');
         const preview = document.getElementById('preview');
+
+        dropZone.onclick = () => fileInput.click();
+        dropZone.ondragover = (e) => { e.preventDefault(); dropZone.classList.add('dragover'); };
+        dropZone.ondragleave = () => dropZone.classList.remove('dragover');
+        dropZone.ondrop = (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('dragover');
+            if (e.dataTransfer.files.length) handleFiles(e.dataTransfer.files[0]);
+        };
+        fileInput.onchange = (e) => handleFiles(e.target.files[0]);
+
+        function handleFiles(file) {
+            const reader = new FileReader();
+            reader.onload = (e) => { preview.src = e.target.result; preview.style.display = 'block'; dropZone.style.display = 'none'; };
+            reader.readAsDataURL(file);
+            window.currentFile = file;
+        }
+
         const generateBtn = document.getElementById('generateBtn');
         const gallery = document.getElementById('gallery');
         const statusOverlay = document.getElementById('status-overlay');
         let dirHandle = null;
 
         function setCategory(cat) {
-            document.querySelectorAll('.btn-folder').forEach(btn => { if (btn.id !== 'btn_pick_folder') btn.classList.toggle('active', btn.innerText.includes(cat)); });
-            document.getElementById('save_path').value = document.getElementById('root_path').value + cat;
+            document.querySelectorAll('.btn-cat').forEach(btn => {
+                if (btn.innerText === cat) btn.classList.add('active');
+                else if (['PC', 'Mon', 'NPC'].includes(btn.innerText)) btn.classList.remove('active');
+            });
+            document.getElementById('save_path').value = `WAN/GE_SD/${cat}/`;
         }
-        setCategory('PC');
 
         document.getElementById('btn_pick_folder').onclick = async () => { dirHandle = await window.showDirectoryPicker(); document.getElementById('local_path_display').value = dirHandle.name; };
-
-        const durSlider = document.getElementById('duration_slider');
-        const durInput = document.getElementById('duration_input');
-        durSlider.oninput = () => durInput.value = durSlider.value;
-        durInput.oninput = () => durSlider.value = durInput.value;
-
-        function loadImageFile(file) {
-            const reader = new FileReader();
-            reader.onload = (e) => { preview.src = e.target.result; preview.style.display = 'block'; document.getElementById('dropZone').style.display = 'none'; };
-            reader.readAsDataURL(file);
-        }
-
-        fileInput.onchange = (e) => {
-            if (e.target.files[0]) loadImageFile(e.target.files[0]);
-        };
-
-        // Drag & Drop
-        const dropZone = document.getElementById('dropZone');
-        dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('drag-over'); });
-        dropZone.addEventListener('dragleave', () => { dropZone.classList.remove('drag-over'); });
-        dropZone.addEventListener('drop', (e) => {
-            e.preventDefault();
-            dropZone.classList.remove('drag-over');
-            const file = e.dataTransfer.files[0];
-            if (file && file.type.startsWith('image/')) {
-                const dt = new DataTransfer();
-                dt.items.add(file);
-                fileInput.files = dt.files;
-                loadImageFile(file);
-            }
-        });
+        document.getElementById('duration_slider').oninput = (e) => document.getElementById('dur_val').innerText = e.target.value;
 
         function showToast(msg) {
-            const toast = document.createElement('div'); toast.className = 'toast'; toast.innerHTML = msg;
-            statusOverlay.appendChild(toast); setTimeout(() => toast.remove(), 5000);
+            const t = document.createElement('div'); t.className = 'toast'; t.innerText = msg;
+            statusOverlay.appendChild(t); setTimeout(() => t.remove(), 5000);
         }
 
         generateBtn.onclick = async () => {
-            const file = fileInput.files[0];
             const name = document.getElementById('char_name').value;
-            if (!file || !name) { showToast("❌ 이미지와 ID를 확인해 주세요."); return; }
-            generateBtn.disabled = true; generateBtn.innerHTML = '⚡ 연산 중...';
+            const motions = Array.from(document.querySelectorAll('input[name="motions"]:checked')).map(cb => cb.value);
+            const removeBg = document.getElementById('remove_bg_toggle').checked;
+
+            if (!window.currentFile || !name || !motions.length) { showToast("❌ 이미지와 정보를 확인하세요."); return; }
+
+            generateBtn.disabled = true; showToast("🚀 블랙웰 연산 엔진 가동...");
+
+            // 핵심: FormData 중복 방지 로직
             const formData = new FormData(document.getElementById('mainForm'));
-            formData.append('image', file);
+            formData.delete('motions');
+            motions.forEach(m => formData.append('motions', m));
+
+            formData.append('remove_bg', removeBg);
+            formData.append('image', window.currentFile);
+
             try {
                 const res = await fetch('/generate', { method: 'POST', body: formData });
                 const result = await res.json();
@@ -516,38 +586,38 @@
                     if (gallery.innerText.includes('대기 중')) gallery.innerHTML = '';
                     result.queued.forEach(item => {
                         const div = document.createElement('div'); div.className = 'gallery-item'; div.id = `item-${item.prompt_id}`;
-                        div.innerHTML = `<div style="font-size:10px; font-weight:600; color:var(--accent); margin-bottom:5px;">${item.type.toUpperCase()} v${item.version}</div>
-                            <div class="preview-box" style="width:140px; height:140px; background:#000; border-radius:4px; display:flex; align-items:center; justify-content:center; font-size:9px; color:#444;">Rendering...</div>
-                            <button class="btn-save" style="display:none; width:100%; background:var(--accent); border:none; color:white; padding:6px; border-radius:4px; font-size:10px; font-weight:600; cursor:pointer; margin-top:8px;">💾 Save</button>`;
+                        div.innerHTML = `<div class="label">${item.type.toUpperCase()} v${item.version}</div>
+                            <div class="box">Rendering...</div>
+                            <button style="display:none;" class="save-btn">💾 Save</button>`;
                         gallery.prepend(div);
                         checkStatus(item.prompt_id, `${name}_${item.type}_v${item.version}.gif`);
                     });
                 }
             } catch (e) { showToast("❌ 서버 오류"); }
-            finally { generateBtn.disabled = false; generateBtn.innerHTML = '🎬 연산 시작'; }
+            finally { generateBtn.disabled = false; }
         };
 
-        async function checkStatus(promptId, targetFilename) {
-            const interval = setInterval(async () => {
+        async function checkStatus(id, filename) {
+            const timer = setInterval(async () => {
                 try {
-                    const res = await fetch(`/status/${promptId}`);
+                    const res = await fetch(`/status/${id}`);
                     const data = await res.json();
                     if (data.status === 'Completed') {
-                        clearInterval(interval);
-                        const itemDiv = document.getElementById(`item-${promptId}`);
-                        itemDiv.querySelector('.preview-box').innerHTML = `<img src="${data.url}" style="width:100%; height:100%; object-fit:contain;">`;
-                        const saveBtn = itemDiv.querySelector('.btn-save');
-                        saveBtn.style.display = 'block';
-                        saveBtn.onclick = async () => {
+                        clearInterval(timer);
+                        const item = document.getElementById(`item-${id}`);
+                        item.querySelector('.box').innerHTML = `<img src="${data.url}" style="width:100%;height:100%;object-fit:contain;">`;
+                        const btn = item.querySelector('.save-btn');
+                        btn.style.display = 'block';
+                        btn.onclick = async () => {
                             if (dirHandle) {
                                 try {
-                                    const fileHandle = await dirHandle.getFileHandle(targetFilename, { create: true });
-                                    const writable = await fileHandle.createWritable();
-                                    const gifRes = await fetch(data.url);
-                                    await writable.write(await gifRes.blob()); await writable.close();
-                                    showToast(`✅ ${targetFilename} 저장 완료!`);
-                                } catch (e) { window.location.href = `/proxy_download?url=${encodeURIComponent(data.url)}&filename=${encodeURIComponent(targetFilename)}`; }
-                            } else { window.location.href = `/proxy_download?url=${encodeURIComponent(data.url)}&filename=${encodeURIComponent(targetFilename)}`; }
+                                    const fh = await dirHandle.getFileHandle(filename, { create: true });
+                                    const wr = await fh.createWritable();
+                                    const r = await fetch(data.url);
+                                    await wr.write(await r.blob()); await wr.close();
+                                    showToast("✅ 저장 완료!");
+                                } catch (e) { window.location.href = `/proxy_download?url=${encodeURIComponent(data.url)}&filename=${encodeURIComponent(filename)}`; }
+                            } else { window.location.href = `/proxy_download?url=${encodeURIComponent(data.url)}&filename=${encodeURIComponent(filename)}`; }
                         };
                     }
                 } catch (e) { }

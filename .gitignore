@@ -3,3 +3,21 @@ __pycache__/
 uploads/
 *.log
 .env
+
+# Build outputs
+build/
+dist/
+*.spec
+
+# Test files
+test_*.py
+check_*.py
+analyze_gif.py
+debug_form.txt
+payload_direct.json
+
+# Result GIFs
+*.gif
+
+# Knight templates (dev only)
+knight_v*.json

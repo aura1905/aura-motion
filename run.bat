@@ -1,8 +1,13 @@
 @echo off
 title GE SD Motion Portal
 echo ==========================================
-echo   GE SD Motion Portal v3.2.1 Starting...
+echo   GE SD Motion Portal v1.2.7 Starting...
 echo ==========================================
-pip install -r requirements.txt
+
+echo [*] Checking dependencies...
+pip install -r requirements.txt --quiet
+
+echo [*] Starting server and launching browser...
 python app.py
+
 pause
