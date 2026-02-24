@@ -72,8 +72,10 @@ def generate():
         blackwell_filename = upload_res['name']
 
         results = []
+        print(f"[GENERATE] Motions: {selected_motions}, Batch: {batch_count}, Duration: {duration}, RemoveBG: {remove_bg}", flush=True)
         for m_type in selected_motions:
             custom_prompt = request.form.get(f'prompt_{m_type}', '')
+            print(f"  [MOTION] {m_type}: prompt='{custom_prompt[:60]}...'", flush=True)
             for v in range(1, batch_count + 1):
                 payload = json.loads(json.dumps(template))
                 
