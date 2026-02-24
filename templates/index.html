@@ -657,8 +657,10 @@
                         gallery.prepend(div);
                         checkStatus(item.prompt_id, `${name}_${item.type}_v${item.version}.gif`);
                     });
+                } else {
+                    showToast(`❌ ${result.error || '알 수 없는 오류'}`);
                 }
-            } catch (e) { showToast("❌ 서버 오류"); }
+            } catch (e) { showToast(`❌ 서버 오류: ${e.message}`); console.error(e); }
             finally { generateBtn.disabled = false; }
         };
 
