@@ -78,38 +78,43 @@ def generate():
             motion_duration = float(request.form.get(f'duration_{m_type}', duration))
             print(f"  [MOTION] {m_type}: dur={motion_duration}, prompt='{custom_prompt[:60]}...'", flush=True)
             for v in range(1, batch_count + 1):
-                payload = json.loads(json.dumps(template))
-                
-                # 1. 원화 주입 (시작/끝 프레임 고정)
-                payload["23"]["inputs"]["image"] = blackwell_filename
-                payload["24"]["inputs"]["image"] = blackwell_filename
-                payload["1370"]["inputs"]["text"] = custom_prompt
-                payload["1512:1668"]["inputs"]["value"] = int(motion_duration) 
-                
-                # 2. 배경 제거(RMBG) 스위칭 로직
-                if remove_bg:
-                    # 제거 활성화: 워크플로우 원본 그대로 유지 (28 -> 1788 -> 1512:1731:1099)
-                    # wan_api_aura.json에 이미 올바르게 설정되어 있으므로 추가 조작 불필요
-                    print(f"  [+] RMBG ON: 1788 in payload={('1788' in payload)}, 28.images={payload['28']['inputs']['images']}")
-                else:
-                    # 제거 비활성화: RMBG 노드(1788)를 페이로드에서 완전 제거
-                    if "1788" in payload:
-                        del payload["1788"]
-                    payload["28"]["inputs"]["images"] = ["1512:1731:1099", 0]
-                    print(f"  [-] RMBG OFF: 1788 removed, 28.images={payload['28']['inputs']['images']}")
-                
-                # 최종 전송 전 검증 로그
-                print(f"  [DEBUG] Final 28.images: {payload['28']['inputs']['images']}, Total nodes: {len(payload)}")
+                try:
+                    payload = json.loads(json.dumps(template))
+                    
+                    # 1. 원화 주입 (시작/끝 프레임 고정)
+                    payload["23"]["inputs"]["image"] = blackwell_filename
+                    payload["24"]["inputs"]["image"] = blackwell_filename
+                    payload["1370"]["inputs"]["text"] = custom_prompt
+                    payload["1512:1668"]["inputs"]["value"] = int(motion_duration) 
+                    
+                    # 2. 배경 제거(RMBG) 스위칭 로직
+                    if remove_bg:
+                        print(f"  [+] RMBG ON: 1788 in payload={('1788' in payload)}", flush=True)
+                    else:
+                        if "1788" in payload:
+                            del payload["1788"]
+                        payload["28"]["inputs"]["images"] = ["1512:1731:1099", 0]
+                        print(f"  [-] RMBG OFF", flush=True)
 
-                full_save_path = f"{save_path_prefix}/{char_name}/{char_name}_{m_type}_v{v}"
-                payload["28"]["inputs"]["filename_prefix"] = full_save_path
-                payload["1512:1670"]["inputs"]["value"] = random.randint(1000000000, 9999999999)
+                    full_save_path = f"{save_path_prefix}/{char_name}/{char_name}_{m_type}_v{v}"
+                    payload["28"]["inputs"]["filename_prefix"] = full_save_path
+                    payload["1512:1670"]["inputs"]["value"] = random.randint(1000000000, 9999999999)
 
-                req_p = urllib.request.Request(f"{COMFYUI_URL}/prompt", 
-                                             data=json.dumps({"prompt": payload}).encode("utf-8"),
-                                             headers={"Content-Type": "application/json"})
-                with urllib.request.urlopen(req_p) as res_p:
-                    results.append({"type": m_type, "version": v, "prompt_id": json.loads(res_p.read().decode())['prompt_id']})
+                    req_p = urllib.request.Request(f"{COMFYUI_URL}/prompt", 
+                                                 data=json.dumps({"prompt": payload}).encode("utf-8"),
+                                                 headers={"Content-Type": "application/json"})
+                    with urllib.request.urlopen(req_p) as res_p:
+                        pid = json.loads(res_p.read().decode())['prompt_id']
+                        results.append({"type": m_type, "version": v, "prompt_id": pid})
+                        print(f"  [OK] {m_type} v{v} queued: {pid}", flush=True)
+                except urllib.error.HTTPError as he:
+                    err_body = he.read().decode()
+                    print(f"  [FAIL] {m_type} v{v} ComfyUI {he.code}: {err_body}", flush=True)
+                    results.append({"type": m_type, "version": v, "prompt_id": None, "error": err_body})
+                except Exception as ex:
+                    print(f"  [FAIL] {m_type} v{v} Error: {ex}", flush=True)
+                    traceback.print_exc()
+                    results.append({"type": m_type, "version": v, "prompt_id": None, "error": str(ex)})
 
         return jsonify({"status": "Success", "queued": results})
     except Exception as e:
@@ -182,4 +187,4 @@ def open_browser(): webbrowser.open_new("http://127.0.0.1:3031")
 if __name__ == '__main__':
     kill_port(3031)
     Timer(1.5, open_browser).start()
-    app.run(host='0.0.0.0', port=3031, debug=False)
+    app.run(host='0.0.0.0', port=3031, debug=True)
